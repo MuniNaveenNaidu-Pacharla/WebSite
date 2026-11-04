@@ -1,26 +1,233 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Editorial Brand Tokens: Warm White, Charcoal, Orange & Controlled Purple */
+  --color-brand-canvas: #FCFCFD;
+  --color-brand-surface: #F8F8FA;
+  --color-brand-surface-subtle: #F4F4F6;
+  --color-brand-charcoal: #171717;
+  --color-brand-charcoal-muted: #59616D;
+  --color-brand-charcoal-subtle: #737373;
+  --color-brand-border: #EAECEF;
+  --color-brand-border-subtle: #F0F0F2;
+
+  /* Blue Accent (Primary Brand Identity) */
+  --color-brand-blue: #0084FF;
+  --color-brand-blue-hover: #006ED6;
+  --color-brand-blue-light: #EFF6FF;
+  --color-brand-blue-border: #BFDBFE;
+
+  /* Backward-compatible aliases */
+  --color-brand-orange: #0084FF;
+  --color-brand-orange-hover: #006ED6;
+  --color-brand-orange-light: #EFF6FF;
+  --color-brand-orange-border: #BFDBFE;
+
+  /* Controlled Sky / Cyan Highlights */
+  --color-brand-purple: #00C6FF;
+  --color-brand-purple-hover: #00A6DF;
+  --color-brand-purple-light: #F0F9FF;
+  --color-brand-purple-border: #BAE6FD;
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.25);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Warm White Canvas & Charcoal Typography */
+  --background: #FCFCFD;
+  --foreground: #171717;
+
+  /* Elevated Surfaces */
+  --card: #FFFFFF;
+  --card-foreground: #171717;
+  --popover: #FFFFFF;
+  --popover-foreground: #171717;
+
+  /* Blue Accent (Primary Actions & CTAs) */
+  --primary: #0084FF;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary & Structural Actions (Charcoal / Editorial) */
+  --secondary: #171717;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F8F8FA;
+  --muted-foreground: #525252;
+  --accent: #EFF6FF;
+  --accent-foreground: #0084FF;
+
+  --destructive: #EF4444;
+  --border: #E8E8EB;
+  --input: #E2E2E6;
+  --ring: #0084FF;
+  --radius: 0.625rem;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border);
+    box-sizing: border-box;
+  }
+
+  html {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color: #FCFCFD;
+    color: #171717;
+  }
+
+  body {
+    background-color: #FCFCFD;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Accessible Blue focus rings */
+  :focus-visible {
+    outline: 2px solid #0084FF;
+    outline-offset: 2px;
+  }
+
+  /* Sleek modern custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(248, 248, 250, 0.7);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #BFDBFE;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #0084FF;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Reduced-motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Latest UI Keyframe Animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(0, 132, 255, 0.2);
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.shimmer-card {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(0, 132, 255, 0.08) 50%, rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerSweep 4s infinite linear;
+}
+
+/* High-End Editorial Scroll Reveal Animations - Content is always fully visible */
+.reveal-init {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-line {
+  width: 0;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 200ms;
+}
+
+.reveal-line.revealed {
+  width: 4rem;
+}
+
+.reveal-delay-1 {
+  transition-delay: 80ms;
+}
+.reveal-delay-2 {
+  transition-delay: 160ms;
+}
+.reveal-delay-3 {
+  transition-delay: 240ms;
+}
+.reveal-delay-4 {
+  transition-delay: 320ms;
+}
+.reveal-delay-5 {
+  transition-delay: 400ms;
 }
