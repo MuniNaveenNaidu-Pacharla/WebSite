@@ -25,6 +25,7 @@ export function QuoteForm() {
   const [formData, setFormData] = React.useState<FormState>(INITIAL_STATE);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [serverError, setServerError] = React.useState<string | null>(null);
   const [errors, setErrors] = React.useState<Partial<Record<keyof FormState, string>>>({});
 
   const validate = (): boolean => {
@@ -44,20 +45,40 @@ export function QuoteForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setServerError(null);
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to submit inquiry to database.");
+      }
+
       setIsSubmitted(true);
-    }, 400);
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      setServerError(
+        err.message || "Failed to save inquiry. Please check Supabase credentials or try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
     setFormData(INITIAL_STATE);
     setIsSubmitted(false);
+    setServerError(null);
     setErrors({});
   };
 
@@ -246,6 +267,13 @@ export function QuoteForm() {
             <p className="mt-1.5 text-xs text-[#DC2626] font-medium">{errors.messages}</p>
           )}
         </div>
+
+        {/* Server Error Alert */}
+        {serverError && (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-700">
+            <strong className="font-semibold">Notice:</strong> {serverError}
+          </div>
+        )}
 
         {/* Action Button - Blue Primary CTA */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
