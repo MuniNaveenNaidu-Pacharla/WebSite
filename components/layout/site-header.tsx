@@ -104,8 +104,29 @@ export function SiteHeader() {
     setServicesOpen(false);
   }
 
+  // Scroll detection: Keep header background completely transparent at the top
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-[#EAECEF]/80 bg-white/95 backdrop-blur-md shadow-xs transition-colors">
+    <header
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
+        isScrolled
+          ? "bg-white/80 backdrop-blur-md border-b border-[#EAECEF]/60 shadow-xs"
+          : "bg-transparent border-b border-transparent shadow-none"
+      )}
+    >
       <Container size="default">
         <div className="flex h-18 sm:h-20 items-center justify-between">
           {/* Lorvish Official Company Logo on the Left */}
